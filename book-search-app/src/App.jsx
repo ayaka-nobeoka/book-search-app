@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [state, setState] = useState("");
+  const [query, setQuery] = useState(""); // 確定された検索キーワード
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    if (!query) return;
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBooks(data.items || []);
+        console.log("検索結果:", data.items);
+      });
+  }, [query]);
+
+  // 💡まとめると：
+  // 検索キーワード query が変わるたびに
+  // https://www.googleapis.com/... にリクエストを送り
+  // 結果を console.log() で出力
+
+  const handleState = (e) => {
+    setState(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setQuery(state);
+    console.log("検索されたキーワード:", state);
+    setState("");
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <input value={state} onChange={(e) => handleState(e)} />
+      <button onClick={handleSearch}>検索</button>
+      <p>検索されたキーワード:{query}</p>
+
+      {books.map((item) => (
+        <div key={item.id}>
+          <h3>{item.volumeInfo.title}</h3>
+          <p>{item.volumeInfo.authors?.join(", ")}</p>
+          <img src={item.volumeInfo.imageLinks?.thumbnail} />
+        </div>
+      ))}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
