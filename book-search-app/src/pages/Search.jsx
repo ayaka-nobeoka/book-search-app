@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import "/src/App.css";
 function Search() {
   const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ function Search() {
   };
 
   return (
-    <>
+    <div>
       <h2>検索ページ</h2>
       <input
         value={state}
@@ -53,7 +53,7 @@ function Search() {
           />
         </div>
       ))}
-    </>
+    </div>
   );
 }
 

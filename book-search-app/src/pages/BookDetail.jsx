@@ -9,6 +9,10 @@ export default function BookDetail() {
   const [loading, setLoading] = useState(null); // ← ローディング状態
   const [error, setError] = useState(null); // ← エラー状態
 
+  // 読書メモと評価の state
+  const [memo, setMemo] = useState();
+  const [review, setReview] = useState(0);
+
   // 🧠 なぜ null を使うの？
   // useState({}) にすると、最初からオブジェクトがあると見なされてしまう
 
@@ -18,6 +22,7 @@ export default function BookDetail() {
     setLoading(true); // ローディング開始
     setError(null); // エラー初期化
 
+    // 書籍データ取得
     fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("通信エラー"); // 👈 ここで通信失敗を検知
@@ -35,6 +40,23 @@ export default function BookDetail() {
       });
   }, [id]);
 
+  // localStorage から読み込む
+  useEffect(() => {
+    const saved = localStorage.getItem(`memo-${id}`);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setMemo(parsed.memo);
+      setReview(parsed.review);
+    }
+  }, [id]);
+
+  // 保存処理
+  const handleSave = () => {
+    const data = { memo, review };
+    localStorage.setItem(`memo-${id}`, JSON.stringify(data));
+    alert("保存しました！");
+  };
+
   return (
     <>
       <h2>📘 書籍の詳細ページ</h2>
@@ -46,6 +68,18 @@ export default function BookDetail() {
           <h2>{book.volumeInfo.title}</h2>
           <img src={book.volumeInfo.imageLinks?.thumbnail} />
           <p>{book.volumeInfo.description}</p>
+          <h3>📚 読書メモ</h3>
+          <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
+          <h3>💡 面白かった度（1〜5）</h3>
+          <input
+            type="number"
+            min="1"
+            max="5"
+            value={review}
+            onChange={(e) => setReview(Number(e.target.value))}
+          />
+          <br />
+          <button onClick={handleSave}>保存する</button>
         </div>
       )}
     </>
