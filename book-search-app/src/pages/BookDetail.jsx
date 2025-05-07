@@ -12,6 +12,7 @@ export default function BookDetail() {
   // 読書メモと評価の state
   const [memo, setMemo] = useState();
   const [review, setReview] = useState(0);
+  const [read, setRead] = useState(false);
 
   // 🧠 なぜ null を使うの？
   // useState({}) にすると、最初からオブジェクトがあると見なされてしまう
@@ -47,12 +48,13 @@ export default function BookDetail() {
       const parsed = JSON.parse(saved);
       setMemo(parsed.memo);
       setReview(parsed.review);
+      setRead(parsed.read ?? false); // ← 未定義だったら false に
     }
   }, [id]);
 
   // 保存処理
   const handleSave = () => {
-    const data = { memo, review };
+    const data = { memo, review, read };
     localStorage.setItem(`memo-${id}`, JSON.stringify(data));
     alert("保存しました！");
   };
@@ -68,6 +70,14 @@ export default function BookDetail() {
           <h2>{book.volumeInfo.title}</h2>
           <img src={book.volumeInfo.imageLinks?.thumbnail} />
           <p>{book.volumeInfo.description}</p>
+          <label>
+            <input
+              type="checkbox"
+              checked={read}
+              onChange={(e) => setRead(e.target.checked)}
+            />
+            📖 読んだことがある
+          </label>
           <h3>📚 読書メモ</h3>
           <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
           <h3>💡 面白かった度（1〜5）</h3>
