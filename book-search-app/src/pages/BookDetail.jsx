@@ -13,6 +13,7 @@ export default function BookDetail() {
   const [memo, setMemo] = useState();
   const [review, setReview] = useState(0);
   const [read, setRead] = useState(false);
+  const [like, setLike] = useState(false);
 
   // 🧠 なぜ null を使うの？
   // useState({}) にすると、最初からオブジェクトがあると見なされてしまう
@@ -49,15 +50,33 @@ export default function BookDetail() {
       setMemo(parsed.memo);
       setReview(parsed.review);
       setRead(parsed.read ?? false); // ← 未定義だったら false に
+      setLike(parsed.like ?? false);
     }
   }, [id]);
 
   // 保存処理
   const handleSave = () => {
-    const data = { memo, review, read };
-    localStorage.setItem(`memo-${id}`, JSON.stringify(data));
+    const data = {
+      memo, // ← memo: memo の省略形
+      review, // ← review: review の省略形
+      read, // ← read: read の省略形
+      like,
+      title: book.volumeInfo.title,
+      thumbnail: book.volumeInfo.imageLinks?.thumbnail,
+    };
+    const allData = JSON.parse(localStorage.getItem("books-data") || "{}");
+    // ↑ books-data がまだなければ空のオブジェクトから始める
+    allData[id] = data; //allData というオブジェクトに、id をキーとして data を保存する
+    //idごとに1冊ずつ保存された本の情報を、まとめて保管しているオブジェクトを作っている
+    // ↑ 検索やクリックなどで得た id をキーにしてデータを保存・上書き
+    localStorage.setItem("books-data", JSON.stringify(allData));
+    // ↑ 保存された全データを localStorage に戻す（上書き保存）
     alert("保存しました！");
   };
+
+  // 📦 全データを取り出して（parsed）
+  // 🎯 編集したい1冊だけを書き換えて（parsed[id] = newData）
+  // 💾 全体を上書き保存して戻す（setItem）
 
   return (
     <>
@@ -67,7 +86,18 @@ export default function BookDetail() {
       {error && <p>エラーが発生しました: {error}</p>}
       {book && (
         <div>
-          <h2>{book.volumeInfo.title}</h2>
+          <h2>
+            {book.volumeInfo.title}{" "}
+            <label>
+              <input
+                type="checkbox"
+                checked={like}
+                onChange={(e) => setLike(e.target.checked)}
+              />
+              お気に入り
+            </label>
+          </h2>
+
           <img src={book.volumeInfo.imageLinks?.thumbnail} />
           <p>{book.volumeInfo.description}</p>
           <label>
