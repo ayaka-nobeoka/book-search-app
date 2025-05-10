@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,16 +22,18 @@ export default function Login() {
     }
     if (!email.includes("@")) {
       isValid = false;
-      setErrormail("名前を入力してください");
+      setErrormail("メールアドレスを入力してください");
     }
     if (password.length < 6) {
-      setErrorPassword("名前を入力してください");
+      setErrorPassword("パスワードを入力してください");
       isValid = false;
     }
     // すべてOKの場合
     // ✅ 最後にまとめて判断
     if (!isValid) return;
     console.log("送信データ：", { name, email, password });
+    localStorage.setItem("username", name);
+    navigate("/mypage"); // ← これでマイページに移動！！
   };
   return (
     <div>
@@ -36,13 +41,13 @@ export default function Login() {
       <form onSubmit={handleSubmit}>
         <p>ユーザー名</p>
         <input value={name} onChange={(e) => setName(e.target.value)} />
-        {errorName && <p style={{ color: "red" }}>{setErrorName}</p>}
+        {errorName && <p style={{ color: "red" }}>{errorName}</p>}
         <p>メールアドレス</p>
         <input value={email} onChange={(e) => setEmail(e.target.value)} />
-        {errorEmail && <p style={{ color: "red" }}>{setErrormail}</p>}
+        {errorEmail && <p style={{ color: "red" }}>{errorEmail}</p>}
         <p>パスワード</p>
         <input value={password} onChange={(e) => setPassword(e.target.value)} />
-        {errorPassword && <p style={{ color: "red" }}>{setErrorPassword}</p>}
+        {errorPassword && <p style={{ color: "red" }}>{errorPassword}</p>}
         <button type="Submit">ログイン</button>
       </form>
     </div>
