@@ -1,22 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "/src/App.css";
+import { useBookSearch } from "../hooks/useBookSearch";
 function Search() {
   const navigate = useNavigate();
 
   const [state, setState] = useState("");
   const [query, setQuery] = useState(""); // 確定された検索キーワード
-  const [books, setBooks] = useState([]);
+  const result = useBookSearch(query);
+  console.log(result.books);
+  console.log(result.loading);
 
-  useEffect(() => {
-    if (!query) return;
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBooks(data.items || []);
-        console.log("検索結果:", data.items);
-      });
-  }, [query]);
+  const { books } = useBookSearch(query);
+  //   これで books の中には「APIで取得された検索結果の配列」が入ってきます📚
+
+  //   useEffect(() => {
+  //     if (!query) return;
+  //     fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setBooks(data.items || []);
+  //         console.log("検索結果:", data.items);
+  //       });
+  //   }, [query]);
 
   // 💡まとめると：
   // 検索キーワード query が変わるたびに
