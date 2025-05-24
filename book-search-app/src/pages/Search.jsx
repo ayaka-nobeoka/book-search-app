@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "/src/App.css";
 import { useBookSearch } from "../hooks/useBookSearch";
+import BookCard from "../component/BookCard";
 function Search() {
-  const navigate = useNavigate();
-
   const [state, setState] = useState("");
   const [query, setQuery] = useState(""); // 確定された検索キーワード
   const result = useBookSearch(query);
@@ -49,16 +47,17 @@ function Search() {
       />
       <button onClick={handleSearch}>検索</button>
       <p>検索されたキーワード:{query}</p>
-      {books.map((item) => (
-        <div key={item.id}>
-          <h3>{item.volumeInfo.title}</h3>
-          <p>{item.volumeInfo.authors?.join(", ")}</p>
-          <img
-            src={item.volumeInfo.imageLinks?.thumbnail}
-            onClick={() => navigate(`/book/${item.id}`)}
+      <div class="book-grid">
+        {books.map((item) => (
+          <BookCard
+            key={item.id}
+            id={item.id} // ←追加！
+            title={item.volumeInfo.title}
+            authors={item.volumeInfo.authors}
+            imageLinks={item.volumeInfo.imageLinks}
           />
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
