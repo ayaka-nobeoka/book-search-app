@@ -1,3 +1,4 @@
+import styles from "./BookCard.module.css";
 import { useNavigate } from "react-router-dom";
 
 function BookCard({ id, title, authors, imageLinks }) {
@@ -7,7 +8,7 @@ function BookCard({ id, title, authors, imageLinks }) {
     navigate(`/book/${id}`); // ←ここで使う
   };
   return (
-    <div className="book-card">
+    <div className={styles.card}>
       <div onClick={handleClick}>
         <h3>{title}</h3>
         <p>{authors?.join(", ")}</p>
