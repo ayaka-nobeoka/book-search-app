@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function BookDetail() {
   const { id } = useParams(); // ← URLからIDを取得
@@ -80,6 +81,12 @@ export default function BookDetail() {
 
   return (
     <>
+      <nav>
+        <Link to="/">🔍 検索</Link>
+        <Link to="/mypage">📚 マイページ</Link>
+        <Link to="/login">🔑 ログイン</Link>
+      </nav>
+
       <h2>詳細ページ</h2>
 
       {loading && <p>読み込み中...</p>}

@@ -2,6 +2,8 @@ import { useState } from "react";
 import "/src/App.css";
 import { useBookSearch } from "../hooks/useBookSearch";
 import BookCard from "../component/BookCard";
+import { Link } from "react-router-dom";
+
 function Search() {
   const [state, setState] = useState("");
   const [query, setQuery] = useState(""); // 確定された検索キーワード
@@ -39,6 +41,11 @@ function Search() {
 
   return (
     <div>
+      <nav>
+        <Link to="/mypage">📚 マイページ</Link>
+        <Link to="/login">🔑 ログイン</Link>
+      </nav>
+
       <h2>検索ページ</h2>
       <input
         value={state}
