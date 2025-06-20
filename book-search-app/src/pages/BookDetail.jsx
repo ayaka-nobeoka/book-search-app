@@ -1,3 +1,4 @@
+import styles from "./BookDetail.module.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -143,7 +144,9 @@ export default function BookDetail() {
               onChange={(e) => setReview(Number(e.target.value))}
             />
             <br />
-            <button onClick={handleSave}>保存する</button>
+            <button className={styles.button} onClick={handleSave}>
+              保存する
+            </button>
           </div>
         </div>
       )}
