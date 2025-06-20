@@ -112,7 +112,11 @@ export default function BookDetail() {
             </h2>
 
             <img src={book.volumeInfo.imageLinks?.thumbnail} />
-            <p>{book.volumeInfo.description}</p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: book.volumeInfo.description,
+              }}
+            ></p>
             <label className="checkbox-label">
               <input
                 type="checkbox"
