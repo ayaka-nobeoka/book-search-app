@@ -42,6 +42,7 @@ function Search() {
   return (
     <div>
       <nav>
+        <Link to="/">🔍 検索</Link>
         <Link to="/mypage">📚 マイページ</Link>
         <Link to="/login">🔑 ログイン</Link>
       </nav>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 function MyPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // ← 仮の状態
   const [name, setName] = useState("");
   const [books, setBooks] = useState([]);
   useEffect(() => {
@@ -21,19 +22,54 @@ function MyPage() {
     // 最後に setBooks(entries) で React の状態（books）を更新します。
   }, []);
 
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(loggedIn === "true");
+  }, []);
+
   return (
-    <div>
-      <h2>{name}のページ</h2>
-      {books.map(([id, book]) => (
-        <div key={id}>
-          <h2>本のタイトル：{book.title}</h2> {/* → "羅生門" */}
-          <img src={book.thumbnail} alt={book.title} />
-          <p>{book.read ? "読んだことある本" : "未読"}</p>
-          {/* → trueなので"読んだ" */}
-          <p>{book.like ? "お気に入りにした" : ""}</p> {/* → trueなので表示 */}
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="mypage-container">
+        {isLoggedIn ? (
+          <div>
+            <h2>マイページ</h2>
+            {name === "ゲスト" ? (
+              <p>
+                ログインしていません。<a href="/login">ログインする</a>
+              </p>
+            ) : (
+              <p>ようこそ、{name}さん！📚</p>
+            )}
+            {books.map(([id, book]) => (
+              <div key={id}>
+                <h2>本のタイトル：{book.title}</h2> {/* → "羅生門" */}
+                <img src={book.thumbnail} alt={book.title} />
+                <p>{book.read ? "読んだことある本" : "未読"}</p>
+                {/* → trueなので"読んだ" */}
+                <p>{book.like ? "お気に入りにした" : ""}</p>{" "}
+                {/* → trueなので表示 */}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="not-logged-in">
+            <p>ログインしていません。</p>
+            <p>
+              <a href="/login">こちらからログイン</a>してください。
+            </p>
+          </div>
+        )}
+      </div>
+      <button
+        onClick={() => {
+          localStorage.removeItem("isLoggedIn");
+          localStorage.removeItem("username");
+          window.location.href = "/login"; // ← 遷移
+        }}
+      >
+        ログアウト
+      </button>
+    </>
   );
 }
 

@@ -14,7 +14,8 @@ export default function Login() {
   const onSubmit = (data) => {
     // バリデーションに成功したときだけ呼ばれる！
     console.log("送信データ:", data);
-    localStorage.setItem("username", data.name); // ← ここで保存OK！
+    localStorage.setItem("username", data.name); // ← 誰がログインしているか
+    localStorage.setItem("isLoggedIn", "true"); // ← ログインしている状態かどうか
     navigate("/mypage"); // ← これもここでOK！
   };
 
@@ -55,7 +56,7 @@ export default function Login() {
             {errors.password.message}
           </p>
         )}
-        <button type="Submit">ログイン</button>
+        <button type="submit">ログイン</button>
       </form>
     </div>
   );
