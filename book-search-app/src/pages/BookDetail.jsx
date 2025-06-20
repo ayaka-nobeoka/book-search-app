@@ -80,46 +80,60 @@ export default function BookDetail() {
 
   return (
     <>
-      <h2>📘 書籍の詳細ページ</h2>
+      <h2>詳細ページ</h2>
 
       {loading && <p>読み込み中...</p>}
       {error && <p>エラーが発生しました: {error}</p>}
       {book && (
-        <div>
-          <h2>
-            {book.volumeInfo.title}{" "}
-            <label>
+        <div className="book-detail-container">
+          <div>
+            <h2 style={{ margin: 0 }}>
+              {book.volumeInfo.title}
+              {book.volumeInfo.title}
+              <button
+                className={`svg-heart-button ${like ? "liked" : ""}`}
+                onClick={() => setLike(!like)}
+                aria-label="お気に入り"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="28"
+                  height="28"
+                  fill={like ? "#f28ca3" : "none"}
+                  stroke="#f28ca3"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20.8 4.6c-1.4-1.4-3.6-1.4-5 0l-.8.8-.8-.8c-1.4-1.4-3.6-1.4-5 0s-1.4 3.6 0 5l5.8 5.8 5.8-5.8c1.4-1.4 1.4-3.6 0-5z" />
+                </svg>
+              </button>
+            </h2>
+
+            <img src={book.volumeInfo.imageLinks?.thumbnail} />
+            <p>{book.volumeInfo.description}</p>
+            <label className="checkbox-label">
               <input
                 type="checkbox"
-                checked={like}
-                onChange={(e) => setLike(e.target.checked)}
+                checked={read}
+                onChange={(e) => setRead(e.target.checked)}
               />
-              お気に入り
+              📖 読んだことがある
             </label>
-          </h2>
-
-          <img src={book.volumeInfo.imageLinks?.thumbnail} />
-          <p>{book.volumeInfo.description}</p>
-          <label>
+            <h3>📚 読書メモ</h3>
+            <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
+            <h3>💡 面白かった度（1〜5）</h3>
             <input
-              type="checkbox"
-              checked={read}
-              onChange={(e) => setRead(e.target.checked)}
+              type="number"
+              min="1"
+              max="5"
+              value={review}
+              onChange={(e) => setReview(Number(e.target.value))}
             />
-            📖 読んだことがある
-          </label>
-          <h3>📚 読書メモ</h3>
-          <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
-          <h3>💡 面白かった度（1〜5）</h3>
-          <input
-            type="number"
-            min="1"
-            max="5"
-            value={review}
-            onChange={(e) => setReview(Number(e.target.value))}
-          />
-          <br />
-          <button onClick={handleSave}>保存する</button>
+            <br />
+            <button onClick={handleSave}>保存する</button>
+          </div>
         </div>
       )}
     </>

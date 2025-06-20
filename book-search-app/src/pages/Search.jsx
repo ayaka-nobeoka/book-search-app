@@ -1,22 +1,26 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "/src/App.css";
+import { useBookSearch } from "../hooks/useBookSearch";
+import BookCard from "../component/BookCard";
 function Search() {
-  const navigate = useNavigate();
-
   const [state, setState] = useState("");
   const [query, setQuery] = useState(""); // 確定された検索キーワード
-  const [books, setBooks] = useState([]);
+  const result = useBookSearch(query);
+  console.log(result.books);
+  console.log(result.loading);
 
-  useEffect(() => {
-    if (!query) return;
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBooks(data.items || []);
-        console.log("検索結果:", data.items);
-      });
-  }, [query]);
+  const { books } = useBookSearch(query);
+  //   これで books の中には「APIで取得された検索結果の配列」が入ってきます📚
+
+  //   useEffect(() => {
+  //     if (!query) return;
+  //     fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setBooks(data.items || []);
+  //         console.log("検索結果:", data.items);
+  //       });
+  //   }, [query]);
 
   // 💡まとめると：
   // 検索キーワード query が変わるたびに
@@ -43,16 +47,17 @@ function Search() {
       />
       <button onClick={handleSearch}>検索</button>
       <p>検索されたキーワード:{query}</p>
-      {books.map((item) => (
-        <div key={item.id}>
-          <h3>{item.volumeInfo.title}</h3>
-          <p>{item.volumeInfo.authors?.join(", ")}</p>
-          <img
-            src={item.volumeInfo.imageLinks?.thumbnail}
-            onClick={() => navigate(`/book/${item.id}`)}
+      <div class="book-grid">
+        {books.map((item) => (
+          <BookCard
+            key={item.id}
+            id={item.id} // ←追加！
+            title={item.volumeInfo.title}
+            authors={item.volumeInfo.authors}
+            imageLinks={item.volumeInfo.imageLinks}
           />
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
